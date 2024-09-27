@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Umweltmonitoring St. Gallen</title>
+    <link rel="stylesheet" href="/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <header>
+        <h1>Umweltmonitoring St. Gallen</h1>
+    </header>
+
+    <main>
+        <!-- Luftqualität -->
+        <section id="luftqualität" class="section">
+            <h2>Luftqualität</h2>
+            <div class="value-box">
+                <p class="value" id="pm10">40</p>
+                <p class="description">Feinstaub (PM10): Aktueller Wert in µg/m³</p>
+            </div>
+        </section>
+
+        <!-- CO2 -->
+        <section id="co2" class="section">
+            <h2>CO2-Konzentration in Innenräumen</h2>
+            <div class="value-box">
+                <p class="value" id="co2-value">850</p>
+                <p class="description">CO2-Konzentration in ppm</p>
+            </div>
+        </section>
+
+        <!-- Solarstromproduktion -->
+        <section id="solar" class="section">
+            <h2>Solarstromproduktion</h2>
+            <div class="value-box">
+                <p class="value" id="solar-value">120</p>
+                <p class="description">Aktuelle Stromproduktion in kWh</p>
+            </div>
+        </section>
+
+        <!-- Fazit -->
+        <section id="fazit" class="section">
+            <h2>Fazit</h2>
+            <p id="fazit-text">Daten werden geladen...</p>
+        </section>
+
+        <!-- Diagramm -->
+        <section id="diagramm" class="section">
+            <h2>Diagramm der letzten Woche</h2>
+            <canvas id="weeklyChart" width="400" height="200"></canvas>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; HappyLight; APIs St.Galler Stadtwerke (sgsw)</p>
+    </footer>
+
+    <script src="/script.js"></script>
+</body>
+</html>

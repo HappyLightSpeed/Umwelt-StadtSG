@@ -1,0 +1,89 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+header {
+    text-align: center;
+    padding: 20px;
+    background-color: #00539CFF;
+    color: white;
+}
+
+main {
+    padding: 20px;
+}
+
+.section {
+    position: relative;
+    margin-bottom: 40px;
+    text-align: center;
+    padding: 40px 0;
+}
+
+.value-box {
+    margin-top: 20px;
+    animation: fadeIn 1s ease-in-out;
+}
+
+.value {
+    font-size: 4rem;
+    font-weight: bold;
+}
+
+.description {
+    margin-top: 10px;
+    font-size: 1.2rem;
+}
+
+#luftqualität {
+    background-color: #EAECEE;
+}
+
+#luftqualität::before {
+    content: '';
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    width: 100px;
+    height: 100px;
+    background: url('sun.svg') no-repeat center center;
+    background-size: contain;
+}
+
+#co2 {
+    background-color: #F8F9F9;
+    background-image: url('co2-particles.svg');
+    background-repeat: no-repeat;
+    background-position: right top;
+    background-size: 200px;
+}
+
+#solar {
+    background-color: #FEF9E7;
+    background-image: url('solar-roof.svg');
+    background-repeat: no-repeat;
+    background-position: bottom;
+    background-size: cover;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+canvas {
+    margin: 20px auto;
+}
+
+footer {
+    text-align: center;
+    padding: 10px;
+    background-color: #00539CFF;
+    color: white;
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+}
