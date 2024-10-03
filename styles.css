@@ -1,45 +1,64 @@
+/* Global Styles */
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Roboto', sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f4f4f4;
+    background-color: #FFF;
+    color: #333;
 }
 
 header {
     text-align: center;
     padding: 20px;
-    background-color: #00539CFF;
+    background-color: #E00025;
     color: white;
 }
 
 main {
     padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 .section {
-    position: relative;
-    margin-bottom: 40px;
     text-align: center;
-    padding: 40px 0;
+    margin-bottom: 40px;
 }
 
-.value-box {
-    margin-top: 20px;
-    animation: fadeIn 1s ease-in-out;
-}
-
-.value {
-    font-size: 4rem;
+h1 {
+    font-size: 28px;
     font-weight: bold;
 }
 
-.description {
-    margin-top: 10px;
-    font-size: 1.2rem;
+h2 {
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #333;
 }
 
+.value-box {
+    margin: 20px 0;
+}
+
+.value {
+    font-size: 48px;
+    font-weight: bold;
+    color: #E00025;
+}
+
+.description {
+    font-size: 14px;
+    color: #333;
+}
+
+/* Specific Section Styles */
 #luftqualität {
-    background-color: #EAECEE;
+    background-color: #EAEAEA;
+    padding: 20px;
+    position: relative;
 }
 
 #luftqualität::before {
@@ -47,8 +66,8 @@ main {
     position: absolute;
     right: 10px;
     top: 10px;
-    width: 100px;
-    height: 100px;
+    width: 50px;
+    height: 50px;
     background: url('sun.svg') no-repeat center center;
     background-size: contain;
 }
@@ -57,21 +76,16 @@ main {
     background-color: #F8F9F9;
     background-image: url('co2-particles.svg');
     background-repeat: no-repeat;
-    background-position: right top;
-    background-size: 200px;
+    background-position: center;
+    background-size: 100px;
 }
 
 #solar {
-    background-color: #FEF9E7;
+    background-color: #87BFEF;
     background-image: url('solar-roof.svg');
     background-repeat: no-repeat;
     background-position: bottom;
-    background-size: cover;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    background-size: contain;
 }
 
 canvas {
@@ -81,7 +95,7 @@ canvas {
 footer {
     text-align: center;
     padding: 10px;
-    background-color: #00539CFF;
+    background-color: #333;
     color: white;
     position: fixed;
     width: 100%;

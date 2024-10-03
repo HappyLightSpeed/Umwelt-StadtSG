@@ -17,6 +17,7 @@ function fetchData($url) {
     // Log response for debugging
     if ($httpCode !== 200) {
         echo "Error fetching data from {$url}. HTTP Code: {$httpCode}\n";
+        return null; // Return null on error
     }
 
     return json_decode($response, true);
@@ -69,12 +70,15 @@ if (isset($luftqualitaetData['results']) && is_array($luftqualitaetData['results
 }
 
 // Insert CO2 data
-if (isset($co2Data['records']) && is_array($co2Data['records'])) {
-    foreach ($co2Data['records'] as $co2Record) {
+if (isset($co2Data['results']) && is_array($co2Data['results'])) {
+    foreach ($co2Data['results'] as $co2Record) {
         $description = 'CO2 Sensoren';
-        $time = $co2Record['record_timestamp'];
-        $co2Wert = $co2Record['fields']['co2_value'] ?? null;
-
+        $time = $co2Record['measured_at_new'];
+        
+        // Decode the JSON stored in the 'data' field to access CO2 value
+        $data = json_decode($co2Record['data'], true);
+        $co2Wert = $data['co2'] ?? null; // Accessing the co2 key
+        
         insertData($stmt, $description, $time, null, $co2Wert, null);
     }
 } else {
@@ -84,12 +88,12 @@ if (isset($co2Data['records']) && is_array($co2Data['records'])) {
 }
 
 // Insert Solarstrom data
-if (isset($solarstromData['records']) && is_array($solarstromData['records'])) {
-    foreach ($solarstromData['records'] as $solarRecord) {
+if (isset($solarstromData['results']) && is_array($solarstromData['results'])) {
+    foreach ($solarstromData['results'] as $solarRecord) {
         $description = 'Solarstrom';
-        $time = $solarRecord['record_timestamp'];
-        $stromproduktion = $solarRecord['fields']['produktion_watt'] ?? null;
-
+        $time = $solarRecord['valuedate']; // Correct key for timestamp
+        $stromproduktion = $solarRecord['activepower'] ?? null; // Correct key for production
+        
         insertData($stmt, $description, $time, null, null, $stromproduktion);
     }
 } else {

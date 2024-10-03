@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function() {
-    // Beispiel-Daten
+    // Example data
     const luftqualität = {
         pm10: 40
     };
@@ -12,12 +12,12 @@ document.addEventListener("DOMContentLoaded", function() {
         solar: 120
     };
 
-    // Werte animiert anzeigen
+    // Display values
     document.getElementById('pm10').textContent = luftqualität.pm10;
     document.getElementById('co2-value').textContent = co2Daten.co2;
     document.getElementById('solar-value').textContent = solarDaten.solar;
 
-    // Dynamisches Fazit basierend auf den Werten
+    // Dynamic conclusion based on values
     const pm10 = luftqualität.pm10;
     const co2 = co2Daten.co2;
     const solar = solarDaten.solar;
@@ -38,16 +38,16 @@ document.addEventListener("DOMContentLoaded", function() {
 
     document.getElementById('fazit-text').textContent = fazitText;
 
-    // Diagramm der letzten Woche
+    // Chart for the last week
     const ctx = document.getElementById('weeklyChart').getContext('2d');
     new Chart(ctx, {
         type: 'line',
         data: {
-            labels: ['Mo', 'Di', Mi', 'Do', 'Fr', 'Sa', 'So'],
+            labels: ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'],
             datasets: [{
                 label: 'Feinstaub (PM10) µg/m³',
                 data: [42, 35, 38, 40, 33, 30, 45],
-                borderColor: 'rgba(255, 99, 132, 1)',
+                borderColor: 'rgba(224, 0, 37, 1)',
                 borderWidth: 2,
                 fill: false
             }, {
