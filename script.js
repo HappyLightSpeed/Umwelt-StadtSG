@@ -38,9 +38,57 @@ document.addEventListener("DOMContentLoaded", function() {
 
     document.getElementById('fazit-text').textContent = fazitText;
 
+    // Chart for Luftqualität
+    const ctxLuft = document.getElementById('chartLuftqualität').getContext('2d');
+    new Chart(ctxLuft, {
+        type: 'line',
+        data: {
+            labels: ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'],
+            datasets: [{
+                label: 'Feinstaub (PM10) µg/m³',
+                data: [42, 35, 38, 40, 33, 30, 45],
+                borderColor: 'rgba(224, 0, 37, 1)',
+                borderWidth: 2,
+                fill: false
+            }]
+        }
+    });
+
+    // Chart for CO2
+    const ctxCO2 = document.getElementById('chartCO2').getContext('2d');
+    new Chart(ctxCO2, {
+        type: 'line',
+        data: {
+            labels: ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'],
+            datasets: [{
+                label: 'CO2 (ppm)',
+                data: [850, 870, 860, 840, 830, 820, 810],
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 2,
+                fill: false
+            }]
+        }
+    });
+
+    // Chart for Solarproduktion
+    const ctxSolar = document.getElementById('chartSolar').getContext('2d');
+    new Chart(ctxSolar, {
+        type: 'line',
+        data: {
+            labels: ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'],
+            datasets: [{
+                label: 'Solarstromproduktion (kWh)',
+                data: [110, 90, 130, 120, 150, 140, 160],
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 2,
+                fill: false
+            }]
+        }
+    });
+
     // Chart for the last week
-    const ctx = document.getElementById('weeklyChart').getContext('2d');
-    new Chart(ctx, {
+    const ctxWeekly = document.getElementById('weeklyChart').getContext('2d');
+    new Chart(ctxWeekly, {
         type: 'line',
         data: {
             labels: ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'],
@@ -63,14 +111,6 @@ document.addEventListener("DOMContentLoaded", function() {
                 borderWidth: 2,
                 fill: false
             }]
-        },
-        options: {
-            responsive: true,
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
         }
     });
 });

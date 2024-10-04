@@ -9,22 +9,9 @@ body {
 
 header {
     text-align: center;
-    padding: 20px;
-    background-color: #E00025;
+    padding: 40px 20px;
+    background-color: #FF4D4D; /* Softer Red */
     color: white;
-}
-
-main {
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
-
-.section {
-    text-align: center;
-    margin-bottom: 40px;
 }
 
 h1 {
@@ -35,8 +22,38 @@ h1 {
 h2 {
     font-size: 22px;
     font-weight: bold;
-    margin-bottom: 20px;
-    color: #333;
+    margin: 5px 0; /* Smaller space between h2 elements */
+}
+
+.scroll-hint {
+    font-size: 14px;
+    margin: 10px 0;
+    color: white;
+}
+
+.arrow-icon {
+    font-size: 75px;
+    color: white;
+}
+
+main {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Section Layout */
+.section {
+    background-color: #87BFEF; /* Sky Blue */
+    margin: 20px;
+    width: calc(100% - 40px); /* Full width minus margins */
+    max-width: 1200px;
+    padding: 40px 20px;
+    min-height: 640px;
+    text-align: center;
+    border-radius: 10px;
+    position: relative;
 }
 
 .value-box {
@@ -46,58 +63,51 @@ h2 {
 .value {
     font-size: 48px;
     font-weight: bold;
-    color: #E00025;
+    color: #E00025; /* Red */
 }
 
 .description {
     font-size: 14px;
-    color: #333;
+    color: #333; /* Dark Gray */
 }
 
-/* Specific Section Styles */
-#luftqualität {
-    background-color: #EAEAEA;
-    padding: 20px;
-    position: relative;
-}
-
-#luftqualität::before {
-    content: '';
-    position: absolute;
-    right: 10px;
-    top: 10px;
-    width: 50px;
-    height: 50px;
-    background: url('sun.svg') no-repeat center center;
-    background-size: contain;
-}
-
-#co2 {
-    background-color: #F8F9F9;
-    background-image: url('co2-particles.svg');
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: 100px;
-}
-
-#solar {
-    background-color: #87BFEF;
-    background-image: url('solar-roof.svg');
-    background-repeat: no-repeat;
-    background-position: bottom;
-    background-size: contain;
+.placeholder-image {
+    width: 100%; /* Make the image responsive */
+    height: auto; /* Maintain aspect ratio */
+    max-width: 385px; /* Set maximum width */
+    margin: 20px auto; /* Centering */
 }
 
 canvas {
     margin: 20px auto;
+    max-width: 100%; /* Allow canvas to take full width */
+    height: auto; /* Maintain aspect ratio */
 }
 
+/* Footer */
 footer {
-    text-align: center;
-    padding: 10px;
+    text-align: left; /* Left aligned */
+    padding: 20px;
     background-color: #333;
     color: white;
-    position: fixed;
-    width: 100%;
-    bottom: 0;
+    font-size: 12px;
+}
+
+footer a {
+    color: #87BFEF; /* Sky Blue */
+    text-decoration: none;
+}
+
+
+/* Combined Fazit and Diagramm Styles */
+#fazit-diagramm {
+    background-color: #87BFEF; /* Sky Blue */
+    margin: 20px;
+    width: calc(100% - 80px); /* Full width minus margins */
+    max-width: 1200px;
+    padding: 40px 20px;
+    min-height: 640px;
+    text-align: center;
+    border-radius: 10px;
+    position: relative;
 }

@@ -10,51 +10,65 @@
 <body>
     <header>
         <h1>Umweltmonitoring St.<nbsp>Gallen</h1>
+        <h2>Entdecke die Umwelt</h2>
+        <h2>in St. Gallen</h2>
+        <p class="scroll-hint">Scroll runter</p>
+        <div class="arrow-icon">&#x2193;</div> <!-- Down arrow -->
     </header>
 
     <main>
-        <!-- Luftqualität -->
+        <!-- Luftqualität Section -->
         <section id="luftqualität" class="section">
             <h2>Luftqualität</h2>
             <div class="value-box">
                 <p class="value" id="pm10">40</p>
                 <p class="description">Feinstaub (PM10): Aktueller Wert in µg/m³</p>
+                <img src="placeholder.png" alt="Platzhalter Grafik" class="placeholder-image">
+                <canvas id="chartLuftqualität" width="400" height="200"></canvas>
             </div>
         </section>
 
-        <!-- CO2 -->
+        <!-- CO2 Section -->
         <section id="co2" class="section">
             <h2>CO2-Konzentration in Innenräumen</h2>
             <div class="value-box">
                 <p class="value" id="co2-value">850</p>
                 <p class="description">CO2-Konzentration in ppm</p>
+                <img src="placeholder.png" alt="Platzhalter Grafik" class="placeholder-image">
+                <canvas id="chartCO2" width="400" height="200"></canvas>
             </div>
         </section>
 
-        <!-- Solarstromproduktion -->
+        <!-- Solarstromproduktion Section -->
         <section id="solar" class="section">
             <h2>Solarstromproduktion</h2>
             <div class="value-box">
                 <p class="value" id="solar-value">120</p>
                 <p class="description">Aktuelle Stromproduktion in kWh</p>
+                <img src="placeholder.png" alt="Platzhalter Grafik" class="placeholder-image">
+                <canvas id="chartSolar" width="400" height="200"></canvas>
             </div>
         </section>
 
-        <!-- Fazit -->
-        <section id="fazit" class="section">
-            <h2>Fazit</h2>
+        <!-- Combined Fazit and Diagramm Section -->
+        <section id="fazit-diagramm" class="section">
+            <h2>Fazit und Diagramm der letzten Woche</h2>
             <p id="fazit-text">Daten werden geladen...</p>
-        </section>
-
-        <!-- Diagramm -->
-        <section id="diagramm" class="section">
-            <h2>Diagramm der letzten Woche</h2>
             <canvas id="weeklyChart" width="400" height="200"></canvas>
         </section>
     </main>
 
     <footer>
-        <p>&copy; Umweltmonitoring St.<nbsp>Gallen</p>
+        <p>&copy; HappyLight | Made with lots of Swiss Schoggi</p>
+        <p>Dieses Schulprojekt ist Teil einer Abgabe der FHGR. Dem besten Modul: Interaktive Medien 3</p>
+        <p>Texte & Resultate nicht Fachmännisch gewertet</p>
+        <p>Last updated on: <span id="last-updated">2024-10-03</span></p>
+        <p>
+            Die genutzten APIs stehen unter dem Recht der St. Galler Stadtwerke.<br>
+            <a href="https://daten.sg.ch/explore/dataset/luftwerte-stadt-stgallen%40stadt-stgallen/information?disjunctive.name" target="_blank">Luftwerte Stadt St. Gallen</a><br>
+            <a href="https://daten.sg.ch/explore/dataset/co2-sensoren-innenraume-stadt-stgallen%40stadt-stgallen/information?disjunctive.name&disjunctive.tags_name" target="_blank">CO2 Innenräume</a><br>
+            <a href="https://daten.sg.ch/explore/dataset/aktuelle-stromproduktion-der-solaranlagen-der-stgaller-stadtwerke%40stadt-stgallen/information?disjunctive.name&disjunctive.modultyp&disjunctive.leistung_modul_in_wp" target="_blank">Stromproduktion der Solaranlagen</a>
+        </p>
     </footer>
 
     <script src="script.js"></script>
