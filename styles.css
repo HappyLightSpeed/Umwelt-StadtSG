@@ -9,36 +9,36 @@ body {
 
 header {
     text-align: center;
-    padding: 20px 10px; /* Reduced padding for mobile */
+    padding: 20px 10px;
     background-color: #E54545; /* Softer Red */
     color: white;
 }
 
 h1 {
-    font-size: 28px; /* Reduced for mobile */
+    font-size: 28px; /* Adjusted for mobile */
     font-weight: bold;
 }
 
 h2 {
-    font-size: 22px; /* Reduced for mobile */
+    font-size: 22px; /* Adjusted for mobile */
     font-weight: bold;
     margin: 10px 0;
 }
 
 .scroll-hint {
-    font-size: 16px; /* Reduced for mobile */
+    font-size: 16px;
     margin: 10px 0;
     color: black;
 }
 
 .arrow-icon {
-    font-size: 60px; /* Reduced size for mobile */
-    color: black; /* Changed to black */
+    font-size: 60px;
+    color: black;
 }
 
 /* Main content */
 main {
-    padding: 10px; /* Adjusted for mobile */
+    padding: 10px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -47,81 +47,91 @@ main {
 /* Top Section Styles */
 .top-section {
     text-align: center;
-    background-color: transparent; /* No background */
-    padding: 40px 10px; /* Reduced padding */
+    padding: 60px 10px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
 }
 
 /* Section Layout */
 .section {
     background-color: #87BFEF; /* Sky Blue */
-    margin: 10px; /* Reduced margin for mobile */
-    width: calc(100% - 20px); /* Full width minus margins */
-    max-width: 100%; /* Max width for mobile */
-    padding: 20px 10px; /* Reduced padding */
+    margin: 10px;
+    width: calc(100% - 20px); /* Ensure padding */
+    max-width: 100%;
+    padding: 20px 10px;
     text-align: center;
     border-radius: 10px;
     display: flex;
     flex-direction: column;
-    justify-content: center; /* Vertically centered content */
+    justify-content: center;
     align-items: center;
 }
 
 .value-box {
-    margin: 20px 0; /* Adjusted for mobile */
+    margin: 20px 0;
 }
 
 .value {
-    font-size: 40px; /* Adjusted for mobile */
+    font-size: 40px;
     font-weight: bold;
-    color: #E00025; /* Red */
+    color: #E00025;
 }
 
 .description {
-    font-size: 16px; /* Reduced font size for mobile */
-    color: #333; /* Dark Gray */
+    font-size: 16px;
+    color: #333;
 }
 
 canvas {
-    margin: 10px auto; /* Reduced margin for mobile */
-    max-width: 100%; /* Full width on mobile */
-    height: auto; /* Maintain aspect ratio */
+    margin: 10px auto;
+    max-width: 100%;
+    height: auto;
 }
 
 /* Footer */
 footer {
     background-color: #333;
     color: white;
-    padding: 20px 10px; /* Adjusted padding for mobile */
+    padding: 20px 10px;
 }
 
 .footer-box {
-    text-align: center; /* Center the box */
+    text-align: center;
     max-width: 800px;
     margin: 0 auto;
 }
 
 footer a {
-    color: #87BFEF; /* Sky Blue */
+    color: #87BFEF;
     text-decoration: none;
 }
 
-/* Mobile-first adjustments */
+/* Desktop-specific styles */
 @media only screen and (min-width: 768px) {
     h1 {
-        font-size: 32px; /* Larger for tablet/desktop */
+        font-size: 32px;
     }
 
     h2 {
-        font-size: 26px; /* Larger for tablet/desktop */
+        font-size: 26px;
     }
 
-    .scroll-hint, .arrow-icon {
-        font-size: 18px; /* Larger for tablet/desktop */
+    .scroll-hint {
+        font-size: 18px;
+    }
+
+    .arrow-icon {
+        font-size: 100px;
     }
 
     .section {
         margin: 20px;
         padding: 40px 20px;
+        width: calc(100% - 40px); /* Maintain spacing */
     }
 
     .value {

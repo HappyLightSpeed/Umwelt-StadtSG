@@ -8,43 +8,47 @@ document.addEventListener("DOMContentLoaded", function() {
             const co2Data = data.find(record => record.description === 'CO2 Sensoren');
             const solarData = data.find(record => record.description === 'Solarstrom');
 
-            // If data is available, update the DOM with fetched data
-            if (luftData) {
-                document.getElementById('pm10').textContent = luftData.luftqualitaet || 'N/A';
-            }
+            // Initialize values to "N/A"
+            const pm10Value = luftData ? luftData.luftqualitaet : 'N/A';
+            const co2Value = co2Data ? co2Data.co2_wert : 'N/A';
+            const solarValue = solarData ? solarData.stromproduktion : 'N/A';
 
-            if (co2Data) {
-                document.getElementById('co2-value').textContent = co2Data.co2_wert || 'N/A';
-            }
+            // Update the DOM with fetched data
+            document.getElementById('pm10').textContent = pm10Value;
+            document.getElementById('co2-value').textContent = co2Value;
+            document.getElementById('solar-value').textContent = solarValue;
 
-            if (solarData) {
-                document.getElementById('solar-value').textContent = solarData.stromproduktion || 'N/A';
-            }
+            // Dynamically update the value descriptions based on the fetched data
+            const pm10 = parseFloat(pm10Value || 0);
+            const co2 = parseFloat(co2Value || 0);
+            const solar = parseFloat(solarValue || 0);
 
-            // Dynamically update the conclusion (Fazit) based on the fetched data
-            const pm10 = parseFloat(luftData.luftqualitaet || 0);
-            const co2 = parseFloat(co2Data.co2_wert || 0);
-            const solar = parseFloat(solarData.stromproduktion || 0);
-
-            let fazitText = '';
+            let valueDescription = '';
 
             if (pm10 < 50 && co2 < 1000 && solar > 100) {
-                fazitText = 'Die Umweltbedingungen sind heute gut. Die Luftqualität ist hervorragend, CO2-Konzentrationen sind niedrig und die Solaranlagen produzieren viel Strom.';
+                valueDescription = 'Die Umweltbedingungen sind heute gut. Die Luftqualität ist hervorragend, CO2-Konzentrationen sind niedrig und die Solaranlagen produzieren viel Strom.';
             } else if (pm10 >= 50) {
-                fazitText = 'Die Feinstaubbelastung ist höher als normal. Es wird empfohlen, Aktivitäten im Freien zu reduzieren.';
+                valueDescription = 'Die Feinstaubbelastung ist höher als normal. Es wird empfohlen, Aktivitäten im Freien zu reduzieren.';
             } else if (co2 >= 1000) {
-                fazitText = 'Die CO2-Werte in Innenräumen sind hoch. Es wird empfohlen, regelmäßig zu lüften.';
+                valueDescription = 'Die CO2-Werte in Innenräumen sind hoch. Es wird empfohlen, regelmäßig zu lüften.';
             } else if (solar < 100) {
-                fazitText = 'Die Solarstromproduktion ist heute geringer. Dies könnte an bewölktem Wetter liegen.';
+                valueDescription = 'Die Solarstromproduktion ist heute geringer. Dies könnte an bewölktem Wetter liegen.';
             } else {
-                fazitText = 'Die Bedingungen sind heute stabil.';
+                valueDescription = 'Die Bedingungen sind heute stabil.';
             }
 
-            document.getElementById('fazit-text').textContent = fazitText;
+            // Insert the valueDescription text under the description in each section
+            document.querySelector('#luftqualität .description').textContent = valueDescription;
+            document.querySelector('#co2 .description').textContent = valueDescription;
+            document.querySelector('#solar .description').textContent = valueDescription;
+
         })
         .catch(error => {
             console.error('Error fetching data:', error);
-            document.getElementById('fazit-text').textContent = 'Daten konnten nicht abgerufen werden.';
+            const errorText = 'Daten konnten nicht abgerufen werden.';
+            document.querySelector('#luftqualität .description').textContent = errorText;
+            document.querySelector('#co2 .description').textContent = errorText;
+            document.querySelector('#solar .description').textContent = errorText;
         });
 
     // Chart for Luftqualität
