@@ -9,88 +9,95 @@ body {
 
 header {
     text-align: center;
-    padding: 40px 20px;
-    background-color: #FF4D4D; /* Softer Red */
+    padding: 20px 10px; /* Reduced padding for mobile */
+    background-color: #E54545; /* Softer Red */
     color: white;
 }
 
 h1 {
-    font-size: 28px;
+    font-size: 28px; /* Reduced for mobile */
     font-weight: bold;
 }
 
 h2 {
-    font-size: 22px;
+    font-size: 22px; /* Reduced for mobile */
     font-weight: bold;
-    margin: 5px 0; /* Smaller space between h2 elements */
+    margin: 10px 0;
 }
 
 .scroll-hint {
-    font-size: 14px;
+    font-size: 16px; /* Reduced for mobile */
     margin: 10px 0;
-    color: white;
+    color: black;
 }
 
 .arrow-icon {
-    font-size: 75px;
-    color: white;
+    font-size: 60px; /* Reduced size for mobile */
+    color: black; /* Changed to black */
 }
 
+/* Main content */
 main {
-    padding: 20px;
+    padding: 10px; /* Adjusted for mobile */
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
+/* Top Section Styles */
+.top-section {
+    text-align: center;
+    background-color: transparent; /* No background */
+    padding: 40px 10px; /* Reduced padding */
+}
+
 /* Section Layout */
 .section {
     background-color: #87BFEF; /* Sky Blue */
-    margin: 20px;
-    width: calc(100% - 40px); /* Full width minus margins */
-    max-width: 1200px;
-    padding: 40px 20px;
-    min-height: 640px;
+    margin: 10px; /* Reduced margin for mobile */
+    width: calc(100% - 20px); /* Full width minus margins */
+    max-width: 100%; /* Max width for mobile */
+    padding: 20px 10px; /* Reduced padding */
     text-align: center;
     border-radius: 10px;
-    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Vertically centered content */
+    align-items: center;
 }
 
 .value-box {
-    margin: 20px 0;
+    margin: 20px 0; /* Adjusted for mobile */
 }
 
 .value {
-    font-size: 48px;
+    font-size: 40px; /* Adjusted for mobile */
     font-weight: bold;
     color: #E00025; /* Red */
 }
 
 .description {
-    font-size: 14px;
+    font-size: 16px; /* Reduced font size for mobile */
     color: #333; /* Dark Gray */
 }
 
-.placeholder-image {
-    width: 100%; /* Make the image responsive */
-    height: auto; /* Maintain aspect ratio */
-    max-width: 385px; /* Set maximum width */
-    margin: 20px auto; /* Centering */
-}
-
 canvas {
-    margin: 20px auto;
-    max-width: 100%; /* Allow canvas to take full width */
+    margin: 10px auto; /* Reduced margin for mobile */
+    max-width: 100%; /* Full width on mobile */
     height: auto; /* Maintain aspect ratio */
 }
 
 /* Footer */
 footer {
-    text-align: left; /* Left aligned */
-    padding: 20px;
     background-color: #333;
     color: white;
-    font-size: 12px;
+    padding: 20px 10px; /* Adjusted padding for mobile */
+}
+
+.footer-box {
+    text-align: center; /* Center the box */
+    max-width: 800px;
+    margin: 0 auto;
 }
 
 footer a {
@@ -98,16 +105,34 @@ footer a {
     text-decoration: none;
 }
 
+/* Mobile-first adjustments */
+@media only screen and (min-width: 768px) {
+    h1 {
+        font-size: 32px; /* Larger for tablet/desktop */
+    }
 
-/* Combined Fazit and Diagramm Styles */
-#fazit-diagramm {
-    background-color: #87BFEF; /* Sky Blue */
-    margin: 20px;
-    width: calc(100% - 80px); /* Full width minus margins */
-    max-width: 1200px;
-    padding: 40px 20px;
-    min-height: 640px;
-    text-align: center;
-    border-radius: 10px;
-    position: relative;
+    h2 {
+        font-size: 26px; /* Larger for tablet/desktop */
+    }
+
+    .scroll-hint, .arrow-icon {
+        font-size: 18px; /* Larger for tablet/desktop */
+    }
+
+    .section {
+        margin: 20px;
+        padding: 40px 20px;
+    }
+
+    .value {
+        font-size: 52px;
+    }
+
+    .description {
+        font-size: 18px;
+    }
+
+    canvas {
+        margin: 20px auto;
+    }
 }

@@ -9,22 +9,25 @@
 </head>
 <body>
     <header>
-        <h1>Umweltmonitoring St.<nbsp>Gallen</h1>
-        <h2>Entdecke die Umwelt</h2>
-        <h2>in St. Gallen</h2>
-        <p class="scroll-hint">Scroll runter</p>
-        <div class="arrow-icon">&#x2193;</div> <!-- Down arrow -->
+        <h1>Umweltmonitoring St.&nbsp;Gallen</h1>
     </header>
 
     <main>
+        <!-- Top Section with Transparent Background and Black Text -->
+        <section class="top-section">
+            <h2>Entdecke die Umwelt</h2>
+            <h2>in St. Gallen</h2>
+            <p class="scroll-hint">Scroll runter</p>
+            <div class="arrow-icon">&#x2193;</div> <!-- Down arrow -->
+        </section>
+
         <!-- Luftqualität Section -->
         <section id="luftqualität" class="section">
             <h2>Luftqualität</h2>
             <div class="value-box">
-                <p class="value" id="pm10">40</p>
+                <p class="value" id="pm10">lädt</p>
                 <p class="description">Feinstaub (PM10): Aktueller Wert in µg/m³</p>
-                <img src="placeholder.png" alt="Platzhalter Grafik" class="placeholder-image">
-                <canvas id="chartLuftqualität" width="400" height="200"></canvas>
+                <canvas id="chartLuftqualität" width="600" height="400"></canvas> <!-- Increased graph size -->
             </div>
         </section>
 
@@ -32,10 +35,9 @@
         <section id="co2" class="section">
             <h2>CO2-Konzentration in Innenräumen</h2>
             <div class="value-box">
-                <p class="value" id="co2-value">850</p>
+                <p class="value" id="co2-value">lädt</p>
                 <p class="description">CO2-Konzentration in ppm</p>
-                <img src="placeholder.png" alt="Platzhalter Grafik" class="placeholder-image">
-                <canvas id="chartCO2" width="400" height="200"></canvas>
+                <canvas id="chartCO2" width="600" height="400"></canvas> <!-- Increased graph size -->
             </div>
         </section>
 
@@ -43,32 +45,35 @@
         <section id="solar" class="section">
             <h2>Solarstromproduktion</h2>
             <div class="value-box">
-                <p class="value" id="solar-value">120</p>
+                <p class="value" id="solar-value">lädt</p>
                 <p class="description">Aktuelle Stromproduktion in kWh</p>
-                <img src="placeholder.png" alt="Platzhalter Grafik" class="placeholder-image">
-                <canvas id="chartSolar" width="400" height="200"></canvas>
+                <canvas id="chartSolar" width="600" height="400"></canvas> <!-- Increased graph size -->
             </div>
         </section>
 
         <!-- Combined Fazit and Diagramm Section -->
         <section id="fazit-diagramm" class="section">
-            <h2>Fazit und Diagramm der letzten Woche</h2>
-            <p id="fazit-text">Daten werden geladen...</p>
-            <canvas id="weeklyChart" width="400" height="200"></canvas>
+            <h2>Was zeigen diese Werte?</h2>
+            <p id="fazit-text">Die Luftqualität in St. Gallen zeigt eine moderate Feinstaubkonzentration (PM10), die unter der gesundheitsschädlichen Schwelle liegt, jedoch bei höheren Werten die Atemwege belasten kann. Die CO2-Konzentrationen sind in den meisten Innenräumen unbedenklich, wobei erhöhte Werte auf eine unzureichende Belüftung hinweisen können. Die Solarstromproduktion hängt stark von den täglichen Sonnenstunden ab und variiert entsprechend der Wetterbedingungen.</p>
+            
+            <h2>Diagramm der letzten Woche</h2>
+            <canvas id="weeklyChart" width="600" height="400"></canvas> <!-- Increased graph size -->
         </section>
     </main>
 
     <footer>
-        <p>&copy; HappyLight | Made with lots of Swiss Schoggi</p>
-        <p>Dieses Schulprojekt ist Teil einer Abgabe der FHGR. Dem besten Modul: Interaktive Medien 3</p>
-        <p>Texte & Resultate nicht Fachmännisch gewertet</p>
-        <p>Last updated on: <span id="last-updated">2024-10-03</span></p>
-        <p>
-            Die genutzten APIs stehen unter dem Recht der St. Galler Stadtwerke.<br>
-            <a href="https://daten.sg.ch/explore/dataset/luftwerte-stadt-stgallen%40stadt-stgallen/information?disjunctive.name" target="_blank">Luftwerte Stadt St. Gallen</a><br>
-            <a href="https://daten.sg.ch/explore/dataset/co2-sensoren-innenraume-stadt-stgallen%40stadt-stgallen/information?disjunctive.name&disjunctive.tags_name" target="_blank">CO2 Innenräume</a><br>
-            <a href="https://daten.sg.ch/explore/dataset/aktuelle-stromproduktion-der-solaranlagen-der-stgaller-stadtwerke%40stadt-stgallen/information?disjunctive.name&disjunctive.modultyp&disjunctive.leistung_modul_in_wp" target="_blank">Stromproduktion der Solaranlagen</a>
-        </p>
+        <div class="footer-box">
+            <p>&copy; HappyLight | Made with lots of Swiss Schoggi</p>
+            <p>Dieses Schulprojekt ist Teil einer Abgabe der FHGR. Dem besten Modul: Interaktive Medien 3</p>
+            <p>Texte & Resultate nicht Fachmännisch gewertet</p>
+            <p>Last updated on: <span id="last-updated">2024-10-03</span></p>
+            <p>
+                Die genutzten APIs stehen unter dem Recht der St. Galler Stadtwerke.<br>
+                <a href="https://daten.sg.ch/explore/dataset/luftwerte-stadt-stgallen%40stadt-stgallen/information?disjunctive.name" target="_blank">Luftwerte Stadt St. Gallen</a><br>
+                <a href="https://daten.sg.ch/explore/dataset/co2-sensoren-innenraume-stadt-stgallen%40stadt-stgallen/information?disjunctive.name&disjunctive.tags_name" target="_blank">CO2 Innenräume</a><br>
+                <a href="https://daten.sg.ch/explore/dataset/aktuelle-stromproduktion-der-solaranlagen-der-stgaller-stadtwerke%40stadt-stgallen/information?disjunctive.name&disjunctive.modultyp&disjunctive.leistung_modul_in_wp" target="_blank">Stromproduktion der Solaranlagen</a>
+            </p>
+        </div>
     </footer>
 
     <script src="script.js"></script>
