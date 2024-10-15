@@ -4,22 +4,20 @@ require_once 'config.php';
 
 header('Content-Type: application/json');
 
-// Set default limit if not specified
-$limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 7; // Get the last 7 days' data
-
 try {
     // Establish database connection
     $pdo = new PDO($dsn, $username, $password, $options);
 
     // Prepare SQL query to retrieve data from the "Umwelt_Stadt_St_Gallen" table
     $stmt = $pdo->prepare("
-        SELECT description, DATE(time) as day, luftqualitaet, co2_wert, stromproduktion 
+        SELECT description, time, luftqualitaet
         FROM Umwelt_Stadt_St_Gallen 
-        WHERE HOUR(time) = 12
-        ORDER BY day DESC 
-        LIMIT :limit
+        WHERE luftqualitaet IS NOT NULL
+          AND DATE(time) = '2024-07-02'
+        LIMIT 17
     ");
-    $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+
+    // Execute the query without binding any parameters
     $stmt->execute();
 
     // Fetch all results
@@ -32,3 +30,4 @@ try {
     // Return error message in case of failure
     echo json_encode(['error' => $e->getMessage()]);
 }
+

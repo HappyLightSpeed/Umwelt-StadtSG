@@ -1,129 +1,186 @@
-document.addEventListener("DOMContentLoaded", function() {
-    // Fetch data from the provided API
-    fetch('https://etl.mmp.li/Umwelt_Stadt_St_Gallen/etl/unload.php')
-        .then(response => response.json())
-        .then(data => {
-            // Assuming the API returns an array of records
-            const luftData = data.find(record => record.description === 'Luftqualität');
-            const co2Data = data.find(record => record.description === 'CO2 Sensoren');
-            const solarData = data.find(record => record.description === 'Solarstrom');
+// Function to fetch and handle data from all APIs
+async function fetchData() {
+    try {
+        // Fetch data from all three APIs simultaneously
+        const [stromRes, co2Res, airRes] = await Promise.all([
+            fetch('https://etl.mmp.li/Umwelt_Stadt_St_Gallen/etl/unloadStrom.php'),
+            fetch('https://etl.mmp.li/Umwelt_St_Gallen/etl/unloadCo2.php'),
+            fetch('https://etl.mmp.li/Umwelt_St_Gallen/etl/unloadAirQuality.php')
+        ]);
 
-            // Initialize values to "N/A"
-            const pm10Value = luftData ? luftData.luftqualitaet : 'N/A';
-            const co2Value = co2Data ? co2Data.co2_wert : 'N/A';
-            const solarValue = solarData ? solarData.stromproduktion : 'N/A';
+        // Parse the JSON responses
+        const [stromData, co2Data, airData] = await Promise.all([
+            stromRes.json(),
+            co2Res.json(),
+            airRes.json()
+        ]);
 
-            // Update the DOM with fetched data
-            document.getElementById('pm10').textContent = pm10Value;
-            document.getElementById('co2-value').textContent = co2Value;
-            document.getElementById('solar-value').textContent = solarValue;
+        // Update UI with latest values
+        updateAirQuality(airData);
+        updateCO2(co2Data);
+        updateSolar(stromData);
 
-            // Dynamically update the value descriptions based on the fetched data
-            const pm10 = parseFloat(pm10Value || 0);
-            const co2 = parseFloat(co2Value || 0);
-            const solar = parseFloat(solarValue || 0);
+    } catch (error) {
+        console.error('Error fetching data:', error);
+    }
+}
 
-            let valueDescription = '';
+// Function to update Luftqualität section with the most recent value and chart
+function updateAirQuality(airData) {
+    const latestValue = airData[airData.length - 1].pm10; // Get most recent PM10 value
+    document.getElementById('pm10').innerText = `${latestValue} µg/m³`;
 
-            if (pm10 < 50 && co2 < 1000 && solar > 100) {
-                valueDescription = 'Die Umweltbedingungen sind heute gut. Die Luftqualität ist hervorragend, CO2-Konzentrationen sind niedrig und die Solaranlagen produzieren viel Strom.';
-            } else if (pm10 >= 50) {
-                valueDescription = 'Die Feinstaubbelastung ist höher als normal. Es wird empfohlen, Aktivitäten im Freien zu reduzieren.';
-            } else if (co2 >= 1000) {
-                valueDescription = 'Die CO2-Werte in Innenräumen sind hoch. Es wird empfohlen, regelmäßig zu lüften.';
-            } else if (solar < 100) {
-                valueDescription = 'Die Solarstromproduktion ist heute geringer. Dies könnte an bewölktem Wetter liegen.';
-            } else {
-                valueDescription = 'Die Bedingungen sind heute stabil.';
+    const dailyData = groupByDay(airData, 'pm10');
+    const labels = Object.keys(dailyData);
+    const data = Object.values(dailyData);
+
+    const ctx = document.getElementById('chartLuftqualität').getContext('2d');
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Feinstaub (PM10) µg/m³',
+                data: data,
+                borderColor: 'rgba(75, 192, 192, 1)',
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                fill: true
+            }]
+        },
+        options: {
+            scales: {
+                x: {
+                    type: 'time',
+                    time: {
+                        unit: 'day'
+                    },
+                    title: {
+                        display: true,
+                        text: 'Datum'
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'PM10 µg/m³'
+                    }
+                }
             }
-
-            // Insert the valueDescription text under the description in each section
-            document.querySelector('#luftqualität .description').textContent = valueDescription;
-            document.querySelector('#co2 .description').textContent = valueDescription;
-            document.querySelector('#solar .description').textContent = valueDescription;
-
-        })
-        .catch(error => {
-            console.error('Error fetching data:', error);
-            const errorText = 'Daten konnten nicht abgerufen werden.';
-            document.querySelector('#luftqualität .description').textContent = errorText;
-            document.querySelector('#co2 .description').textContent = errorText;
-            document.querySelector('#solar .description').textContent = errorText;
-        });
-
-    // Chart for Luftqualität
-    const ctxLuft = document.getElementById('chartLuftqualität').getContext('2d');
-    new Chart(ctxLuft, {
-        type: 'line',
-        data: {
-            labels: ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'],
-            datasets: [{
-                label: 'Feinstaub (PM10) µg/m³',
-                data: [42, 35, 38, 40, 33, 30, 45],
-                borderColor: 'rgba(224, 0, 37, 1)',
-                borderWidth: 2,
-                fill: false
-            }]
         }
     });
+}
 
-    // Chart for CO2
-    const ctxCO2 = document.getElementById('chartCO2').getContext('2d');
-    new Chart(ctxCO2, {
+// Function to update CO2 section with the most recent value and chart
+function updateCO2(co2Data) {
+    const latestValue = co2Data[co2Data.length - 1].co2_wert; // Get most recent CO2 value
+    document.getElementById('co2-value').innerText = `${latestValue} ppm`;
+
+    const dailyData = groupByDay(co2Data, 'co2_wert');
+    const labels = Object.keys(dailyData);
+    const data = Object.values(dailyData);
+
+    const ctx = document.getElementById('chartCO2').getContext('2d');
+    new Chart(ctx, {
         type: 'line',
         data: {
-            labels: ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'],
+            labels: labels,
             datasets: [{
-                label: 'CO2 (ppm)',
-                data: [850, 870, 860, 840, 830, 820, 810],
+                label: 'CO2 Konzentration (ppm)',
+                data: data,
                 borderColor: 'rgba(54, 162, 235, 1)',
-                borderWidth: 2,
-                fill: false
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                fill: true
             }]
+        },
+        options: {
+            scales: {
+                x: {
+                    type: 'time',
+                    time: {
+                        unit: 'day'
+                    },
+                    title: {
+                        display: true,
+                        text: 'Datum'
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'CO2 ppm'
+                    }
+                }
+            }
         }
     });
+}
 
-    // Chart for Solarproduktion
-    const ctxSolar = document.getElementById('chartSolar').getContext('2d');
-    new Chart(ctxSolar, {
+// Function to update Solarstromproduktion section with the most recent value and chart
+function updateSolar(stromData) {
+    const latestValue = stromData[stromData.length - 1].stromproduktion; // Get most recent strom value
+    document.getElementById('solar-value').innerText = `${latestValue} kWh`;
+
+    const dailyData = groupByDay(stromData, 'stromproduktion');
+    const labels = Object.keys(dailyData);
+    const data = Object.values(dailyData);
+
+    const ctx = document.getElementById('chartSolar').getContext('2d');
+    new Chart(ctx, {
         type: 'line',
         data: {
-            labels: ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'],
+            labels: labels,
             datasets: [{
                 label: 'Solarstromproduktion (kWh)',
-                data: [110, 90, 130, 120, 150, 140, 160],
-                borderColor: 'rgba(75, 192, 192, 1)',
-                borderWidth: 2,
-                fill: false
+                data: data,
+                borderColor: 'rgba(255, 159, 64, 1)',
+                backgroundColor: 'rgba(255, 159, 64, 0.2)',
+                fill: true
             }]
+        },
+        options: {
+            scales: {
+                x: {
+                    type: 'time',
+                    time: {
+                        unit: 'day'
+                    },
+                    title: {
+                        display: true,
+                        text: 'Datum'
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'kWh'
+                    }
+                }
+            }
         }
+    });
+}
+
+// Helper function to group data by day and calculate the average for each day
+function groupByDay(data, valueKey) {
+    const grouped = {};
+
+    data.forEach(item => {
+        const date = new Date(item.time).toISOString().split('T')[0]; // Get the date in YYYY-MM-DD format
+        if (!grouped[date]) {
+            grouped[date] = { sum: 0, count: 0 };
+        }
+        grouped[date].sum += item[valueKey];
+        grouped[date].count += 1;
     });
 
-    // Chart for the last week
-    const ctxWeekly = document.getElementById('weeklyChart').getContext('2d');
-    new Chart(ctxWeekly, {
-        type: 'line',
-        data: {
-            labels: ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'],
-            datasets: [{
-                label: 'Feinstaub (PM10) µg/m³',
-                data: [42, 35, 38, 40, 33, 30, 45],
-                borderColor: 'rgba(224, 0, 37, 1)',
-                borderWidth: 2,
-                fill: false
-            }, {
-                label: 'CO2 (ppm)',
-                data: [850, 870, 860, 840, 830, 820, 810],
-                borderColor: 'rgba(54, 162, 235, 1)',
-                borderWidth: 2,
-                fill: false
-            }, {
-                label: 'Solarstromproduktion (kWh)',
-                data: [110, 90, 130, 120, 150, 140, 160],
-                borderColor: 'rgba(75, 192, 192, 1)',
-                borderWidth: 2,
-                fill: false
-            }]
-        }
-    });
-});
+    // Calculate average for each day
+    const dailyData = {};
+    for (const date in grouped) {
+        dailyData[date] = (grouped[date].sum / grouped[date].count).toFixed(2); // Average with 2 decimals
+    }
+
+    return dailyData;
+}
+
+// Call the fetchData function when the page loads
+window.onload = fetchData;

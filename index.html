@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Umweltmonitoring St. Gallen</title>
     <link rel="stylesheet" href="styles.css">
+    <!-- Chart.js Library -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
@@ -25,9 +26,9 @@
         <section id="luftqualität" class="section">
             <h2>Luftqualität</h2>
             <div class="value-box">
-                <p class="value" id="pm10">N/A</p> <!-- Initial value set to N/A -->
+                <p class="value" id="pm10">N/A</p> <!-- Feinstaub (PM10) latest value will be placed here -->
                 <p class="description">Feinstaub (PM10): Aktueller Wert in µg/m³</p>
-                <canvas id="chartLuftqualität" width="600" height="400"></canvas> <!-- Increased graph size -->
+                <canvas id="chartLuftqualität" width="600" height="400"></canvas> <!-- Chart for Luftqualität -->
             </div>
         </section>
 
@@ -35,9 +36,9 @@
         <section id="co2" class="section">
             <h2>CO2-Konzentration in Innenräumen</h2>
             <div class="value-box">
-                <p class="value" id="co2-value">N/A</p> <!-- Initial value set to N/A -->
+                <p class="value" id="co2-value">N/A</p> <!-- CO2-Wert latest value will be placed here -->
                 <p class="description">CO2-Konzentration in ppm</p>
-                <canvas id="chartCO2" width="600" height="400"></canvas> <!-- Increased graph size -->
+                <canvas id="chartCO2" width="600" height="400"></canvas> <!-- Chart for CO2 concentration -->
             </div>
         </section>
 
@@ -45,9 +46,9 @@
         <section id="solar" class="section">
             <h2>Solarstromproduktion</h2>
             <div class="value-box">
-                <p class="value" id="solar-value">N/A</p> <!-- Initial value set to N/A -->
+                <p class="value" id="solar-value">N/A</p> <!-- Solarstromproduktion latest value will be placed here -->
                 <p class="description">Aktuelle Stromproduktion in kWh</p>
-                <canvas id="chartSolar" width="600" height="400"></canvas> <!-- Increased graph size -->
+                <canvas id="chartSolar" width="600" height="400"></canvas> <!-- Chart for Solarstromproduktion -->
             </div>
         </section>
 
@@ -57,7 +58,7 @@
             <p id="fazit-text">Die Luftqualität in St. Gallen zeigt eine moderate Feinstaubkonzentration (PM10), die unter der gesundheitsschädlichen Schwelle liegt, jedoch bei höheren Werten die Atemwege belasten kann. Die CO2-Konzentrationen sind in den meisten Innenräumen unbedenklich, wobei erhöhte Werte auf eine unzureichende Belüftung hinweisen können. Die Solarstromproduktion hängt stark von den täglichen Sonnenstunden ab und variiert entsprechend der Wetterbedingungen.</p>
             
             <h2>Diagramm der letzten Woche</h2>
-            <canvas id="weeklyChart" width="600" height="400"></canvas> <!-- Increased graph size -->
+            <canvas id="weeklyChart" width="600" height="400"></canvas> <!-- Future section: weekly chart -->
         </section>
     </main>
 
@@ -68,7 +69,7 @@
             <p>Texte & Resultate nicht Fachmännisch gewertet</p>
             <p>Last updated on: <span id="last-updated">2024/10/08</span></p>
             <p>
-                Die genutzten APIs stehen unter dem Recht der St. Galler Stadtwerke.<br>
+                Die genutzten APIs stehen unter dem Recht der St.&nbsp;Galler Stadtwerke.<br>
                 <a href="https://daten.sg.ch/explore/dataset/luftwerte-stadt-stgallen%40stadt-stgallen/information?disjunctive.name" target="_blank">Luftwerte Stadt St. Gallen</a><br>
                 <a href="https://daten.sg.ch/explore/dataset/co2-sensoren-innenraume-stadt-stgallen%40stadt-stgallen/information?disjunctive.name&disjunctive.tags_name" target="_blank">CO2 Innenräume</a><br>
                 <a href="https://daten.sg.ch/explore/dataset/aktuelle-stromproduktion-der-solaranlagen-der-stgaller-stadtwerke%40stadt-stgallen/information?disjunctive.name&disjunctive.modultyp&disjunctive.leistung_modul_in_wp" target="_blank">Stromproduktion der Solaranlagen</a>
