@@ -10,11 +10,11 @@ try {
 
     // Prepare SQL query to retrieve data from the "Umwelt_Stadt_St_Gallen" table
     $stmt = $pdo->prepare("
-    SELECT co2_wert, time
-    FROM Umwelt_Stadt_St_Gallen 
-    WHERE co2_wert IS NOT NULL
-        AND DATE(time) = '2024-07-02'
-    LIMIT 17
+        SELECT co2_wert, time
+        FROM Umwelt_Stadt_St_Gallen 
+        WHERE co2_wert IS NOT NULL
+            AND DATE(time) = '2024-07-02'
+        LIMIT 17
 
     ");
 

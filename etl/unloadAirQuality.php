@@ -13,7 +13,7 @@ try {
         SELECT description, time, luftqualitaet
         FROM Umwelt_Stadt_St_Gallen 
         WHERE luftqualitaet IS NOT NULL
-          AND DATE(time) = '2024-07-02'
+            AND DATE(time) = '2024-07-02'
         LIMIT 17
     ");
 

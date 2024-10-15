@@ -10,11 +10,11 @@ try {
 
     // Prepare SQL query to retrieve data from the "Umwelt_Stadt_St_Gallen" table
     $stmt = $pdo->prepare("
-    SELECT time, stromproduktion
-    FROM Umwelt_Stadt_St_Gallen 
-    WHERE stromproduktion IS NOT NULL
-    ORDER BY time DESC
-    LIMIT 100
+        SELECT time, stromproduktion
+        FROM Umwelt_Stadt_St_Gallen 
+        WHERE stromproduktion IS NOT NULL
+        ORDER BY time DESC
+        LIMIT 100
     ");
 
     // Execute the query without binding any parameters

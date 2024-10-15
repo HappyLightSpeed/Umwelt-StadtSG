@@ -1,186 +1,165 @@
-// Function to fetch and handle data from all APIs
-async function fetchData() {
+// Utility function to extract the date only (YYYY-MM-DD) from the timestamp
+function formatDate(timeString) {
+    return new Date(timeString).toISOString().split('T')[0];
+}
+
+// Fetch and display data for Luftqualität (PM10)
+async function fetchLuftqualität() {
     try {
-        // Fetch data from all three APIs simultaneously
-        const [stromRes, co2Res, airRes] = await Promise.all([
-            fetch('https://etl.mmp.li/Umwelt_Stadt_St_Gallen/etl/unloadStrom.php'),
-            fetch('https://etl.mmp.li/Umwelt_St_Gallen/etl/unloadCo2.php'),
-            fetch('https://etl.mmp.li/Umwelt_St_Gallen/etl/unloadAirQuality.php')
-        ]);
+        const response = await fetch('https://etl.mmp.li/Umwelt_Stadt_St_Gallen/etl/unloadAirQuality.php');
+        const data = await response.json();
 
-        // Parse the JSON responses
-        const [stromData, co2Data, airData] = await Promise.all([
-            stromRes.json(),
-            co2Res.json(),
-            airRes.json()
-        ]);
+        const latestValue = data[0].pm10_wert; // Replace with the correct key if it's different
+        const latestDate = formatDate(data[0].time); 
 
-        // Update UI with latest values
-        updateAirQuality(airData);
-        updateCO2(co2Data);
-        updateSolar(stromData);
+        // Update the PM10 value in HTML
+        document.getElementById('pm10').innerText = `${latestValue} µg/m³ (${latestDate})`;
 
+        // Prepare data for the chart
+        const labels = data.map(entry => formatDate(entry.time));
+        const pm10Values = data.map(entry => entry.pm10_wert); // Replace with the correct key
+
+        // Create the Luftqualität chart
+        const ctx = document.getElementById('chartLuftqualität').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'PM10 Feinstaub (µg/m³)',
+                    data: pm10Values,
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    fill: true
+                }]
+            },
+            options: {
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Datum'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'PM10 (µg/m³)'
+                        }
+                    }
+                }
+            }
+        });
     } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error('Error fetching Luftqualität data:', error);
     }
 }
 
-// Function to update Luftqualität section with the most recent value and chart
-function updateAirQuality(airData) {
-    const latestValue = airData[airData.length - 1].pm10; // Get most recent PM10 value
-    document.getElementById('pm10').innerText = `${latestValue} µg/m³`;
+// Fetch and display data for CO2
+async function fetchCO2() {
+    try {
+        const response = await fetch('https://etl.mmp.li/Umwelt_Stadt_St_Gallen/etl/unloadCo2.php');
+        const data = await response.json();
 
-    const dailyData = groupByDay(airData, 'pm10');
-    const labels = Object.keys(dailyData);
-    const data = Object.values(dailyData);
+        const latestValue = data[0].co2_wert;
+        const latestDate = formatDate(data[0].time);
 
-    const ctx = document.getElementById('chartLuftqualität').getContext('2d');
-    new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: labels,
-            datasets: [{
-                label: 'Feinstaub (PM10) µg/m³',
-                data: data,
-                borderColor: 'rgba(75, 192, 192, 1)',
-                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                fill: true
-            }]
-        },
-        options: {
-            scales: {
-                x: {
-                    type: 'time',
-                    time: {
-                        unit: 'day'
+        // Update the CO2 value in HTML
+        document.getElementById('co2-value').innerText = `${latestValue} ppm (${latestDate})`;
+
+        // Prepare data for the chart
+        const labels = data.map(entry => formatDate(entry.time));
+        const co2Values = data.map(entry => entry.co2_wert);
+
+        // Create the CO2 chart
+        const ctx = document.getElementById('chartCO2').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'CO2-Konzentration (ppm)',
+                    data: co2Values,
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    fill: true
+                }]
+            },
+            options: {
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Datum'
+                        }
                     },
-                    title: {
-                        display: true,
-                        text: 'Datum'
-                    }
-                },
-                y: {
-                    title: {
-                        display: true,
-                        text: 'PM10 µg/m³'
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'CO2 (ppm)'
+                        }
                     }
                 }
             }
-        }
-    });
-}
-
-// Function to update CO2 section with the most recent value and chart
-function updateCO2(co2Data) {
-    const latestValue = co2Data[co2Data.length - 1].co2_wert; // Get most recent CO2 value
-    document.getElementById('co2-value').innerText = `${latestValue} ppm`;
-
-    const dailyData = groupByDay(co2Data, 'co2_wert');
-    const labels = Object.keys(dailyData);
-    const data = Object.values(dailyData);
-
-    const ctx = document.getElementById('chartCO2').getContext('2d');
-    new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: labels,
-            datasets: [{
-                label: 'CO2 Konzentration (ppm)',
-                data: data,
-                borderColor: 'rgba(54, 162, 235, 1)',
-                backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                fill: true
-            }]
-        },
-        options: {
-            scales: {
-                x: {
-                    type: 'time',
-                    time: {
-                        unit: 'day'
-                    },
-                    title: {
-                        display: true,
-                        text: 'Datum'
-                    }
-                },
-                y: {
-                    title: {
-                        display: true,
-                        text: 'CO2 ppm'
-                    }
-                }
-            }
-        }
-    });
-}
-
-// Function to update Solarstromproduktion section with the most recent value and chart
-function updateSolar(stromData) {
-    const latestValue = stromData[stromData.length - 1].stromproduktion; // Get most recent strom value
-    document.getElementById('solar-value').innerText = `${latestValue} kWh`;
-
-    const dailyData = groupByDay(stromData, 'stromproduktion');
-    const labels = Object.keys(dailyData);
-    const data = Object.values(dailyData);
-
-    const ctx = document.getElementById('chartSolar').getContext('2d');
-    new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: labels,
-            datasets: [{
-                label: 'Solarstromproduktion (kWh)',
-                data: data,
-                borderColor: 'rgba(255, 159, 64, 1)',
-                backgroundColor: 'rgba(255, 159, 64, 0.2)',
-                fill: true
-            }]
-        },
-        options: {
-            scales: {
-                x: {
-                    type: 'time',
-                    time: {
-                        unit: 'day'
-                    },
-                    title: {
-                        display: true,
-                        text: 'Datum'
-                    }
-                },
-                y: {
-                    title: {
-                        display: true,
-                        text: 'kWh'
-                    }
-                }
-            }
-        }
-    });
-}
-
-// Helper function to group data by day and calculate the average for each day
-function groupByDay(data, valueKey) {
-    const grouped = {};
-
-    data.forEach(item => {
-        const date = new Date(item.time).toISOString().split('T')[0]; // Get the date in YYYY-MM-DD format
-        if (!grouped[date]) {
-            grouped[date] = { sum: 0, count: 0 };
-        }
-        grouped[date].sum += item[valueKey];
-        grouped[date].count += 1;
-    });
-
-    // Calculate average for each day
-    const dailyData = {};
-    for (const date in grouped) {
-        dailyData[date] = (grouped[date].sum / grouped[date].count).toFixed(2); // Average with 2 decimals
+        });
+    } catch (error) {
+        console.error('Error fetching CO2 data:', error);
     }
-
-    return dailyData;
 }
 
-// Call the fetchData function when the page loads
-window.onload = fetchData;
+// Fetch and display data for Solarstromproduktion
+async function fetchSolar() {
+    try {
+        const response = await fetch('https://etl.mmp.li/Umwelt_Stadt_St_Gallen/etl/unloadStrom.php');
+        const data = await response.json();
+
+        const latestValue = data[0].stromproduktion;
+        const latestDate = formatDate(data[0].time);
+
+        // Update the Solarstromproduktion value in HTML
+        document.getElementById('solar-value').innerText = `${latestValue} kWh (${latestDate})`;
+
+        // Prepare data for the chart
+        const labels = data.map(entry => formatDate(entry.time));
+        const solarValues = data.map(entry => entry.stromproduktion);
+
+        // Create the Solarstromproduktion chart
+        const ctx = document.getElementById('chartSolar').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Solarstromproduktion (kWh)',
+                    data: solarValues,
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    fill: true
+                }]
+            },
+            options: {
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Datum'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'kWh'
+                        }
+                    }
+                }
+            }
+        });
+    } catch (error) {
+        console.error('Error fetching Solarstromproduktion data:', error);
+    }
+}
+
+// Initialize fetching of data
+fetchLuftqualität();
+fetchCO2();
+fetchSolar();
