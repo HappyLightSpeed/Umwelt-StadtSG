@@ -143,6 +143,26 @@ async function createCombinedChart() {
     }
 }
 
+// Function to update value descriptions dynamically based on data
+function updateDescriptions(luft, co2, solar) {
+    let valueDescription = '';
+    if (luft < 50 && co2 < 1000 && solar > 100) {
+        valueDescription = 'Die Umweltbedingungen sind heute gut. Die Luftqualität ist hervorragend, CO2-Konzentrationen sind niedrig und die Solaranlagen produzieren viel Strom.';
+    } else if (luft >= 50) {
+        valueDescription = 'Die Feinstaubbelastung ist höher als normal. Es wird empfohlen, Aktivitäten im Freien zu reduzieren.';
+    } else if (co2 >= 1000) {
+        valueDescription = 'Die CO2-Werte in Innenräumen sind hoch. Es wird empfohlen, regelmäßig zu lüften.';
+    } else if (solar < 100) {
+        valueDescription = 'Die Solarstromproduktion ist heute geringer. Dies könnte an bewölktem Wetter liegen.';
+    } else {
+        valueDescription = 'Die Bedingungen sind heute stabil.';
+    }
+            // Insert description under each section
+            document.querySelector('#luftqualität .description').textContent = valueDescription;
+            document.querySelector('#co2 .description').textContent = valueDescription;
+            document.querySelector('#solar .description').textContent = valueDescription;
+        };
+
 // Initialize fetching of data
 async function initialize() {
     await fetchLuftqualität();
