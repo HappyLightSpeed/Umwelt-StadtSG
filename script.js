@@ -10,46 +10,14 @@ async function fetchLuftqualität() {
         const data = await response.json();
 
         const latestValue = data[0].pm10_wert; // Replace with the correct key if it's different
-        const latestDate = formatDate(data[0].time); 
-
-        // Update the PM10 value in HTML
-        document.getElementById('pm10').innerText = `${latestValue} µg/m³ (${latestDate})`;
+        // Remove the date from being displayed with the value
+        document.getElementById('pm10').innerText = `${latestValue} µg/m³`; // Only show value
 
         // Prepare data for the chart
         const labels = data.map(entry => formatDate(entry.time));
         const pm10Values = data.map(entry => entry.pm10_wert); // Replace with the correct key
 
-        // Create the Luftqualität chart
-        const ctx = document.getElementById('chartLuftqualität').getContext('2d');
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: 'PM10 Feinstaub (µg/m³)',
-                    data: pm10Values,
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                    fill: true
-                }]
-            },
-            options: {
-                scales: {
-                    x: {
-                        title: {
-                            display: true,
-                            text: 'Datum'
-                        }
-                    },
-                    y: {
-                        title: {
-                            display: true,
-                            text: 'PM10 (µg/m³)'
-                        }
-                    }
-                }
-            }
-        });
+        return { labels, pm10Values }; // Return for combined chart
     } catch (error) {
         console.error('Error fetching Luftqualität data:', error);
     }
@@ -62,46 +30,14 @@ async function fetchCO2() {
         const data = await response.json();
 
         const latestValue = data[0].co2_wert;
-        const latestDate = formatDate(data[0].time);
-
-        // Update the CO2 value in HTML
-        document.getElementById('co2-value').innerText = `${latestValue} ppm (${latestDate})`;
+        // Remove the date from being displayed with the value
+        document.getElementById('co2-value').innerText = `${latestValue} ppm`; // Only show value
 
         // Prepare data for the chart
         const labels = data.map(entry => formatDate(entry.time));
         const co2Values = data.map(entry => entry.co2_wert);
 
-        // Create the CO2 chart
-        const ctx = document.getElementById('chartCO2').getContext('2d');
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: 'CO2-Konzentration (ppm)',
-                    data: co2Values,
-                    borderColor: 'rgba(255, 99, 132, 1)',
-                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                    fill: true
-                }]
-            },
-            options: {
-                scales: {
-                    x: {
-                        title: {
-                            display: true,
-                            text: 'Datum'
-                        }
-                    },
-                    y: {
-                        title: {
-                            display: true,
-                            text: 'CO2 (ppm)'
-                        }
-                    }
-                }
-            }
-        });
+        return { labels, co2Values }; // Return for combined chart
     } catch (error) {
         console.error('Error fetching CO2 data:', error);
     }
@@ -114,28 +50,75 @@ async function fetchSolar() {
         const data = await response.json();
 
         const latestValue = data[0].stromproduktion;
-        const latestDate = formatDate(data[0].time);
-
-        // Update the Solarstromproduktion value in HTML
-        document.getElementById('solar-value').innerText = `${latestValue} kWh (${latestDate})`;
+        // Remove the date from being displayed with the value
+        document.getElementById('solar-value').innerText = `${latestValue} kWh`; // Only show value
 
         // Prepare data for the chart
         const labels = data.map(entry => formatDate(entry.time));
         const solarValues = data.map(entry => entry.stromproduktion);
 
-        // Create the Solarstromproduktion chart
-        const ctx = document.getElementById('chartSolar').getContext('2d');
+        return { labels, solarValues }; // Return for combined chart
+    } catch (error) {
+        console.error('Error fetching Solarstromproduktion data:', error);
+    }
+}
+
+// Create a combined chart for the last week
+async function createCombinedChart() {
+    try {
+        const luftData = await fetchLuftqualität();
+        const co2Data = await fetchCO2();
+        const solarData = await fetchSolar();
+
+        const last7Days = new Date();
+        last7Days.setDate(last7Days.getDate() - 7);
+
+        // Filter for the last 7 days
+        const labels = [];
+        const pm10Values = [];
+        const co2Values = [];
+        const solarValues = [];
+
+        for (let i = 0; i < 7; i++) {
+            const date = new Date(last7Days);
+            date.setDate(date.getDate() + i);
+            const dateString = formatDate(date);
+
+            labels.push(dateString);
+            pm10Values.push(luftData.pm10Values[luftData.labels.indexOf(dateString)] || 0);
+            co2Values.push(co2Data.co2Values[co2Data.labels.indexOf(dateString)] || 0);
+            solarValues.push(solarData.solarValues[solarData.labels.indexOf(dateString)] || 0);
+        }
+
+        // Create the combined chart
+        const ctx = document.getElementById('weeklyChart').getContext('2d');
         new Chart(ctx, {
             type: 'line',
             data: {
                 labels: labels,
-                datasets: [{
-                    label: 'Solarstromproduktion (kWh)',
-                    data: solarValues,
-                    borderColor: 'rgba(54, 162, 235, 1)',
-                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                    fill: true
-                }]
+                datasets: [
+                    {
+                        label: 'PM10 Feinstaub (µg/m³)',
+                        data: pm10Values,
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        fill: true,
+                    },
+                    {
+                        label: 'CO2-Konzentration (ppm)',
+                        data: co2Values,
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                        fill: true,
+                    },
+                    {
+                        label: 'Solarstromproduktion (kWh)',
+                        data: solarValues,
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        fill: true,
+                    }
+                ]
             },
             options: {
                 scales: {
@@ -148,18 +131,25 @@ async function fetchSolar() {
                     y: {
                         title: {
                             display: true,
-                            text: 'kWh'
-                        }
+                            text: 'Werte'
+                        },
+                        beginAtZero: true,
                     }
                 }
             }
         });
     } catch (error) {
-        console.error('Error fetching Solarstromproduktion data:', error);
+        console.error('Error creating combined chart:', error);
     }
 }
 
 // Initialize fetching of data
-fetchLuftqualität();
-fetchCO2();
-fetchSolar();
+async function initialize() {
+    await fetchLuftqualität();
+    await fetchCO2();
+    await fetchSolar();
+    await createCombinedChart(); // Create the combined chart after fetching data
+}
+
+// Call initialize to start the process
+initialize();
