@@ -3,6 +3,46 @@ function formatDate(timeString) {
     return new Date(timeString).toISOString().split('T')[0];
 }
 
+// Funktion zur Generierung von Erklärungstexten basierend auf den Werten
+function generateDescriptions(pm10, co2, solar) {
+    let pm10Description;
+    let co2Description;
+    let solarDescription;
+
+    // PM10 Beschreibung
+    if (pm10 < 20) {
+        pm10Description = "Die PM10-Werte sind gut und zeigen eine gesunde Luftqualität an.";
+    } else if (pm10 < 50) {
+        pm10Description = "Die PM10-Werte sind moderat. Achte auf die Luftqualität bei längerem Aufenthalt im Freien.";
+    } else {
+        pm10Description = "Die PM10-Werte sind hoch und können gesundheitliche Risiken darstellen. Vermeide längere Aufenthalte im Freien.";
+    }
+
+    // CO2 Beschreibung
+    if (co2 < 400) {
+        co2Description = "Die CO2-Konzentration ist optimal für Innenräume. Gute Belüftung ist gewährleistet.";
+    } else if (co2 < 1000) {
+        co2Description = "Die CO2-Konzentration ist akzeptabel, aber eine bessere Belüftung könnte nötig sein.";
+    } else {
+        co2Description = "Die CO2-Werte sind hoch und können zu Konzentrationsproblemen führen. Eine sofortige Verbesserung der Belüftung wird empfohlen.";
+    }
+
+    // Solar Beschreibung
+    if (solar > 50) {
+        solarDescription = "Die Solarstromproduktion ist hervorragend und trägt erheblich zur Reduzierung des CO2-Ausstoßes bei.";
+    } else if (solar > 20) {
+        solarDescription = "Die Solarstromproduktion ist durchschnittlich. Weiterhin auf eine optimale Ausnutzung der Sonnenstunden achten.";
+    } else {
+        solarDescription = "Die Solarstromproduktion ist niedrig. Überlege, wie du die Effizienz der Solaranlagen steigern kannst.";
+    }
+
+    return {
+        pm10Description,
+        co2Description,
+        solarDescription
+    };
+}
+
 // Fetch and display data for Luftqualität (PM10)
 async function fetchLuftqualität() {
     try {
@@ -12,12 +52,17 @@ async function fetchLuftqualität() {
         }
         const data = await response.json();
 
-        const latestValue = data[0]?.pm10_wert || 'N/A'; // Avoid undefined values
+        // Use the latest value or fallback to 0
+        const latestValue = data[0]?.pm10_wert ?? data[1]?.pm10_wert ?? 0; 
         document.getElementById('pm10').innerText = `${latestValue} µg/m³`;
 
         // Prepare data for the chart
-        const labels = data.map(entry => formatDate(entry.time));
-        const pm10Values = data.map(entry => entry.pm10_wert || 0); // Avoid undefined values
+        const labels = data.slice(0, 7).map(entry => formatDate(entry.time)); // Last 7 days
+        const pm10Values = data.slice(0, 7).map(entry => entry.pm10_wert ?? 0);
+
+        // Generate PM10 description
+        const descriptions = generateDescriptions(latestValue, null, null);
+        document.getElementById('pm10-description').innerText = descriptions.pm10Description;
 
         // Create individual PM10 chart
         const pm10Ctx = document.getElementById('pm10Chart').getContext('2d');
@@ -52,7 +97,7 @@ async function fetchLuftqualität() {
             }
         });
 
-        return { labels, pm10Values };
+        return { latestValue, labels, pm10Values };
     } catch (error) {
         console.error('Error fetching Luftqualität data:', error);
     }
@@ -67,12 +112,17 @@ async function fetchCO2() {
         }
         const data = await response.json();
 
-        const latestValue = data[0]?.co2_wert || 'N/A'; // Avoid undefined values
+        // Use the latest value or fallback to 0
+        const latestValue = data[0]?.co2_wert ?? data[1]?.co2_wert ?? 0;
         document.getElementById('co2-value').innerText = `${latestValue} ppm`;
 
         // Prepare data for the chart
-        const labels = data.map(entry => formatDate(entry.time));
-        const co2Values = data.map(entry => entry.co2_wert || 0);
+        const labels = data.slice(0, 7).map(entry => formatDate(entry.time)); // Last 7 days
+        const co2Values = data.slice(0, 7).map(entry => entry.co2_wert ?? 0);
+
+        // Generate CO2 description
+        const descriptions = generateDescriptions(null, latestValue, null);
+        document.getElementById('co2-description').innerText = descriptions.co2Description;
 
         // Create individual CO2 chart
         const co2Ctx = document.getElementById('co2Chart').getContext('2d');
@@ -107,7 +157,7 @@ async function fetchCO2() {
             }
         });
 
-        return { labels, co2Values };
+        return { latestValue, labels, co2Values };
     } catch (error) {
         console.error('Error fetching CO2 data:', error);
     }
@@ -122,12 +172,17 @@ async function fetchSolar() {
         }
         const data = await response.json();
 
-        const latestValue = data[0]?.stromproduktion || 'N/A'; // Avoid undefined values
+        // Use the latest value or fallback to 0
+        const latestValue = data[0]?.stromproduktion ?? data[1]?.stromproduktion ?? 0;
         document.getElementById('solar-value').innerText = `${latestValue} kWh`;
 
         // Prepare data for the chart
-        const labels = data.map(entry => formatDate(entry.time));
-        const solarValues = data.map(entry => entry.stromproduktion || 0);
+        const labels = data.slice(0, 7).map(entry => formatDate(entry.time)); // Last 7 days
+        const solarValues = data.slice(0, 7).map(entry => entry.stromproduktion ?? 0);
+
+        // Generate Solar description
+        const descriptions = generateDescriptions(null, null, latestValue);
+        document.getElementById('solar-description').innerText = descriptions.solarDescription;
 
         // Create individual Solar chart
         const solarCtx = document.getElementById('solarChart').getContext('2d');
@@ -162,13 +217,13 @@ async function fetchSolar() {
             }
         });
 
-        return { labels, solarValues };
+        return { latestValue, labels, solarValues };
     } catch (error) {
         console.error('Error fetching Solarstromproduktion data:', error);
     }
 }
 
-// Create a combined chart for the last week
+// Create a combined chart for the last week using the same data from individual charts
 async function createCombinedChart() {
     try {
         const luftData = await fetchLuftqualität();
@@ -179,43 +234,33 @@ async function createCombinedChart() {
             throw new Error('Missing data to create chart');
         }
 
-        const today = new Date();
-        const last7Days = [];
-        for (let i = 6; i >= 0; i--) {
-            const date = new Date(today);
-            date.setDate(today.getDate() - i);
-            last7Days.push(formatDate(date));
-        }
-
-        // Prepare data for the last 7 days
-        const pm10Values = last7Days.map(date => luftData.pm10Values[luftData.labels.indexOf(date)] || 0);
-        const co2Values = last7Days.map(date => co2Data.co2Values[co2Data.labels.indexOf(date)] || 0);
-        const solarValues = last7Days.map(date => solarData.solarValues[solarData.labels.indexOf(date)] || 0);
+        // Reuse labels (date) from Luftqualität data (assuming all datasets have the same labels)
+        const labels = luftData.labels;
 
         // Create the combined chart
-        const ctx = document.getElementById('weeklyChart').getContext('2d');
-        new Chart(ctx, {
+        const combinedCtx = document.getElementById('combinedChart').getContext('2d');
+        new Chart(combinedCtx, {
             type: 'line',
             data: {
-                labels: last7Days,
+                labels,
                 datasets: [
                     {
-                        label: 'PM10 Feinstaub (µg/m³)',
-                        data: pm10Values,
+                        label: 'PM10 (µg/m³)',
+                        data: luftData.pm10Values,
                         borderColor: 'rgba(75, 192, 192, 1)',
                         backgroundColor: 'rgba(75, 192, 192, 0.2)',
                         fill: true,
                     },
                     {
-                        label: 'CO2-Konzentration (ppm)',
-                        data: co2Values,
+                        label: 'CO2 (ppm)',
+                        data: co2Data.co2Values,
                         borderColor: 'rgba(255, 99, 132, 1)',
                         backgroundColor: 'rgba(255, 99, 132, 0.2)',
                         fill: true,
                     },
                     {
                         label: 'Solarstromproduktion (kWh)',
-                        data: solarValues,
+                        data: solarData.solarValues,
                         borderColor: 'rgba(54, 162, 235, 1)',
                         backgroundColor: 'rgba(54, 162, 235, 0.2)',
                         fill: true,
@@ -235,7 +280,7 @@ async function createCombinedChart() {
                             display: true,
                             text: 'Werte'
                         },
-                        beginAtZero: true,
+                        beginAtZero: true
                     }
                 }
             }
@@ -245,36 +290,10 @@ async function createCombinedChart() {
     }
 }
 
-// Function to update value descriptions dynamically based on data
-function updateDescriptions(luft, co2, solar) {
-    let valueDescription = '';
-    if (luft < 50 && co2 < 1000 && solar > 100) {
-        valueDescription = 'Die Umweltbedingungen sind heute gut. Die Luftqualität ist hervorragend, CO2-Konzentrationen sind niedrig und die Solaranlagen produzieren viel Strom.';
-    } else if (luft >= 50) {
-        valueDescription = 'Die Feinstaubbelastung ist höher als normal. Es wird empfohlen, Aktivitäten im Freien zu reduzieren.';
-    } else if (co2 >= 1000) {
-        valueDescription = 'Die CO2-Werte in Innenräumen sind hoch. Es wird empfohlen, regelmäßig zu lüften.';
-    } else if (solar < 100) {
-        valueDescription = 'Die Solarstromproduktion ist heute geringer. Dies könnte an bewölktem Wetter liegen.';
-    } else {
-        valueDescription = 'Die Bedingungen sind heute stabil.';
-    }
-    document.querySelector('#luftqualität .description').textContent = valueDescription;
-    document.querySelector('#co2 .description').textContent = valueDescription;
-    document.querySelector('#solar .description').textContent = valueDescription;
-}
-
-// Initialize fetching of data
+// Start all fetch functions and create charts
 async function initialize() {
-    try {
-        await fetchLuftqualität();
-        await fetchCO2();
-        await fetchSolar();
-        await createCombinedChart();
-    } catch (error) {
-        console.error('Error initializing data fetching:', error);
-    }
+    await Promise.all([fetchLuftqualität(), fetchCO2(), fetchSolar()]);
+    await createCombinedChart();
 }
 
-// Call initialize to start the process
 initialize();
