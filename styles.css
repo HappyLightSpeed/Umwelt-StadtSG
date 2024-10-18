@@ -56,6 +56,15 @@ main {
     background-color: transparent;
 }
 
+/* Justified text in top section */
+.justified-text {
+    text-align: justify;
+    max-width: 600px; /* Make it wider than h2 */
+    margin: 20px auto; /* Center the text */
+    font-size: 16px;
+    line-height: 1.5;
+}
+
 /* Section Layout */
 .section {
     background-color: #87BFEF; /* Sky Blue */
@@ -69,6 +78,14 @@ main {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+}
+
+/* Section image styles */
+.section-image {
+    max-width: 120px;
+    max-height: 120px;
+    display: block;
+    margin: 0 auto 20px; /* Center the image with margin below */
 }
 
 .value-box {
