@@ -7,17 +7,19 @@ function formatDate(timeString) {
 async function fetchLuftqualität() {
     try {
         const response = await fetch('https://etl.mmp.li/Umwelt_Stadt_St_Gallen/etl/unloadAirQuality.php');
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
         const data = await response.json();
 
-        const latestValue = data[0].pm10_wert; // Replace with the correct key if it's different
-        // Remove the date from being displayed with the value
-        document.getElementById('pm10').innerText = `${latestValue} µg/m³`; // Only show value
+        const latestValue = data[0]?.pm10_wert || 'N/A'; // Avoid undefined values
+        document.getElementById('pm10').innerText = `${latestValue} µg/m³`;
 
         // Prepare data for the chart
         const labels = data.map(entry => formatDate(entry.time));
-        const pm10Values = data.map(entry => entry.pm10_wert); // Replace with the correct key
+        const pm10Values = data.map(entry => entry.pm10_wert || 0); // Avoid undefined values
 
-        return { labels, pm10Values }; // Return for combined chart
+        return { labels, pm10Values };
     } catch (error) {
         console.error('Error fetching Luftqualität data:', error);
     }
@@ -27,17 +29,19 @@ async function fetchLuftqualität() {
 async function fetchCO2() {
     try {
         const response = await fetch('https://etl.mmp.li/Umwelt_Stadt_St_Gallen/etl/unloadCo2.php');
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
         const data = await response.json();
 
-        const latestValue = data[0].co2_wert;
-        // Remove the date from being displayed with the value
-        document.getElementById('co2-value').innerText = `${latestValue} ppm`; // Only show value
+        const latestValue = data[0]?.co2_wert || 'N/A'; // Avoid undefined values
+        document.getElementById('co2-value').innerText = `${latestValue} ppm`;
 
         // Prepare data for the chart
         const labels = data.map(entry => formatDate(entry.time));
-        const co2Values = data.map(entry => entry.co2_wert);
+        const co2Values = data.map(entry => entry.co2_wert || 0);
 
-        return { labels, co2Values }; // Return for combined chart
+        return { labels, co2Values };
     } catch (error) {
         console.error('Error fetching CO2 data:', error);
     }
@@ -47,17 +51,19 @@ async function fetchCO2() {
 async function fetchSolar() {
     try {
         const response = await fetch('https://etl.mmp.li/Umwelt_Stadt_St_Gallen/etl/unloadStrom.php');
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
         const data = await response.json();
 
-        const latestValue = data[0].stromproduktion;
-        // Remove the date from being displayed with the value
-        document.getElementById('solar-value').innerText = `${latestValue} kWh`; // Only show value
+        const latestValue = data[0]?.stromproduktion || 'N/A'; // Avoid undefined values
+        document.getElementById('solar-value').innerText = `${latestValue} kWh`;
 
         // Prepare data for the chart
         const labels = data.map(entry => formatDate(entry.time));
-        const solarValues = data.map(entry => entry.stromproduktion);
+        const solarValues = data.map(entry => entry.stromproduktion || 0);
 
-        return { labels, solarValues }; // Return for combined chart
+        return { labels, solarValues };
     } catch (error) {
         console.error('Error fetching Solarstromproduktion data:', error);
     }
@@ -70,32 +76,29 @@ async function createCombinedChart() {
         const co2Data = await fetchCO2();
         const solarData = await fetchSolar();
 
-        const last7Days = new Date();
-        last7Days.setDate(last7Days.getDate() - 7);
-
-        // Filter for the last 7 days
-        const labels = [];
-        const pm10Values = [];
-        const co2Values = [];
-        const solarValues = [];
-
-        for (let i = 0; i < 7; i++) {
-            const date = new Date(last7Days);
-            date.setDate(date.getDate() + i);
-            const dateString = formatDate(date);
-
-            labels.push(dateString);
-            pm10Values.push(luftData.pm10Values[luftData.labels.indexOf(dateString)] || 0);
-            co2Values.push(co2Data.co2Values[co2Data.labels.indexOf(dateString)] || 0);
-            solarValues.push(solarData.solarValues[solarData.labels.indexOf(dateString)] || 0);
+        if (!luftData || !co2Data || !solarData) {
+            throw new Error('Missing data to create chart');
         }
+
+        const today = new Date();
+        const last7Days = [];
+        for (let i = 6; i >= 0; i--) {
+            const date = new Date(today);
+            date.setDate(today.getDate() - i);
+            last7Days.push(formatDate(date));
+        }
+
+        // Prepare data for the last 7 days
+        const pm10Values = last7Days.map(date => luftData.pm10Values[luftData.labels.indexOf(date)] || 0);
+        const co2Values = last7Days.map(date => co2Data.co2Values[co2Data.labels.indexOf(date)] || 0);
+        const solarValues = last7Days.map(date => solarData.solarValues[solarData.labels.indexOf(date)] || 0);
 
         // Create the combined chart
         const ctx = document.getElementById('weeklyChart').getContext('2d');
         new Chart(ctx, {
             type: 'line',
             data: {
-                labels: labels,
+                labels: last7Days,
                 datasets: [
                     {
                         label: 'PM10 Feinstaub (µg/m³)',
@@ -157,18 +160,21 @@ function updateDescriptions(luft, co2, solar) {
     } else {
         valueDescription = 'Die Bedingungen sind heute stabil.';
     }
-            // Insert description under each section
-            document.querySelector('#luftqualität .description').textContent = valueDescription;
-            document.querySelector('#co2 .description').textContent = valueDescription;
-            document.querySelector('#solar .description').textContent = valueDescription;
-        };
+    document.querySelector('#luftqualität .description').textContent = valueDescription;
+    document.querySelector('#co2 .description').textContent = valueDescription;
+    document.querySelector('#solar .description').textContent = valueDescription;
+}
 
 // Initialize fetching of data
 async function initialize() {
-    await fetchLuftqualität();
-    await fetchCO2();
-    await fetchSolar();
-    await createCombinedChart(); // Create the combined chart after fetching data
+    try {
+        await fetchLuftqualität();
+        await fetchCO2();
+        await fetchSolar();
+        await createCombinedChart();
+    } catch (error) {
+        console.error('Error initializing data fetching:', error);
+    }
 }
 
 // Call initialize to start the process
