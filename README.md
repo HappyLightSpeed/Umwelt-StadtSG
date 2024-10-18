@@ -1,5 +1,5 @@
 # Umwelt Stadt St. Gallen
-[Website Link](etl.mmp.li/Umwelt_Stadt_St_Gallen)
+[Link zur Website](etl.mmp.li/Umwelt_Stadt_St_Gallen) | 
 Dies ist ein Projekt, das ich im Rahmen meines Studiums in Multimedia Production erstellt habe. Die Website zeigt Umwelt- und Energiedaten für die Stadt St. Gallen, die meine absolute Lieblingsstadt ist.
 
 ## APIs
