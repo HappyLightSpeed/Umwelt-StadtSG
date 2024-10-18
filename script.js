@@ -290,10 +290,87 @@ async function createCombinedChart() {
     }
 }
 
+// Fetch and display data for the weekly chart
+async function fetchWeeklyData() {
+    try {
+        const [luftData, co2Data, solarData] = await Promise.all([
+            fetch('https://etl.mmp.li/Umwelt_Stadt_St_Gallen/etl/unloadAirQuality.php').then(res => res.json()),
+            fetch('https://etl.mmp.li/Umwelt_Stadt_St_Gallen/etl/unloadCo2.php').then(res => res.json()),
+            fetch('https://etl.mmp.li/Umwelt_Stadt_St_Gallen/etl/unloadStrom.php').then(res => res.json())
+        ]);
+
+        // Filter data for the last 7 days
+        const sevenDaysAgo = new Date();
+        sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+        const filteredLuftData = luftData.filter(entry => new Date(entry.time) >= sevenDaysAgo);
+        const filteredCo2Data = co2Data.filter(entry => new Date(entry.time) >= sevenDaysAgo);
+        const filteredSolarData = solarData.filter(entry => new Date(entry.time) >= sevenDaysAgo);
+
+        // Prepare labels and data for the chart
+        const labels = filteredLuftData.map(entry => formatDate(entry.time));
+        const pm10Values = filteredLuftData.map(entry => entry.pm10_wert ?? 0);
+        const co2Values = filteredCo2Data.map(entry => entry.co2_wert ?? 0);
+        const solarValues = filteredSolarData.map(entry => entry.stromproduktion ?? 0);
+
+        // Create the weekly chart
+        const weeklyCtx = document.getElementById('weeklyChart').getContext('2d');
+        new Chart(weeklyCtx, {
+            type: 'line',
+            data: {
+                labels,
+                datasets: [
+                    {
+                        label: 'PM10 (µg/m³)',
+                        data: pm10Values,
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        fill: true,
+                    },
+                    {
+                        label: 'CO2 (ppm)',
+                        data: co2Values,
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                        fill: true,
+                    },
+                    {
+                        label: 'Solarstromproduktion (kWh)',
+                        data: solarValues,
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        fill: true,
+                    }
+                ]
+            },
+            options: {
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Datum'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Werte'
+                        },
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    } catch (error) {
+        console.error('Error fetching weekly data:', error);
+    }
+}
+
 // Start all fetch functions and create charts
 async function initialize() {
     await Promise.all([fetchLuftqualität(), fetchCO2(), fetchSolar()]);
     await createCombinedChart();
+    await fetchWeeklyData(); // Aufruf der neuen weeklyChart Funktion
 }
 
 initialize();
