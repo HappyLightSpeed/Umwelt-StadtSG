@@ -163,3 +163,10 @@ footer a {
         margin: 20px auto;
     }
 }
+
+/* Mobile-specific styles for the Intro text */
+@media only screen and (max-width: 767px) {
+    .justified-text {
+        padding: 0 20px; /* Adds more space on the sides for mobile */
+    }
+}
