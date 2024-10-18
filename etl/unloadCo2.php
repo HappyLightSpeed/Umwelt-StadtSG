@@ -15,7 +15,6 @@ try {
         WHERE co2_wert IS NOT NULL
             AND DATE(time) = '2024-07-02'
         LIMIT 17
-
     ");
 
     // Execute the query without binding any parameters

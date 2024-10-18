@@ -24,9 +24,9 @@ function fetchData($url) {
 }
 
 // Fetch data from all 3 APIs
-$luftqualitaetData = fetchData("https://daten.stadt.sg.ch/api/explore/v2.1/catalog/datasets/luftwerte-stadt-stgallen/records?limit=20");
-$co2Data = fetchData("https://daten.stadt.sg.ch/api/explore/v2.1/catalog/datasets/co2-sensoren-innenraume-stadt-stgallen/records?limit=20");
-$solarstromData = fetchData("https://daten.stadt.sg.ch/api/explore/v2.1/catalog/datasets/aktuelle-stromproduktion-der-solaranlagen-der-stgaller-stadtwerke/records?limit=20");
+$luftqualitaetData = fetchData("https://daten.stadt.sg.ch/api/explore/v2.1/catalog/datasets/luftwerte-stadt-stgallen/records");
+$co2Data = fetchData("https://daten.stadt.sg.ch/api/explore/v2.1/catalog/datasets/co2-sensoren-innenraume-stadt-stgallen/records");
+$solarstromData = fetchData("https://daten.stadt.sg.ch/api/explore/v2.1/catalog/datasets/aktuelle-stromproduktion-der-solaranlagen-der-stgaller-stadtwerke/records");
 
 // Establish database connection
 try {

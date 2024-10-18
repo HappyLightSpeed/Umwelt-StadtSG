@@ -10,7 +10,7 @@ try {
 
     // Prepare SQL query to retrieve data from the "Umwelt_Stadt_St_Gallen" table
     $stmt = $pdo->prepare("
-        SELECT description, time, luftqualitaet
+        SELECT luftqualitaet, time
         FROM Umwelt_Stadt_St_Gallen 
         WHERE luftqualitaet IS NOT NULL
             AND DATE(time) = '2024-07-02'
