@@ -25,6 +25,11 @@ h2 {
     margin: 10px 0;
 }
 
+p a:link, :active, :visited {
+    color: #fff;
+    text-decoration: underline;
+}
+
 .scroll-hint {
     font-size: 16px;
     margin: 10px 0;
