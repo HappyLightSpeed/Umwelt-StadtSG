@@ -57,8 +57,8 @@ async function fetchLuftqualität() {
         document.getElementById('pm10').innerText = `${latestValue} µg/m³`;
 
         // Prepare data for the chart
-        const labels = data.slice(0, 7).map(entry => formatDate(entry.time)); // Last 7 days
-        const pm10Values = data.slice(0, 7).map(entry => entry.pm10_wert ?? 0);
+        const labels = data.map(entry => formatDate(entry.time)); // Alle verfügbaren Daten
+        const pm10Values = data.map(entry => entry.pm10_wert ?? 0);
 
         // Generate PM10 description
         const descriptions = generateDescriptions(latestValue, null, null);
@@ -117,8 +117,8 @@ async function fetchCO2() {
         document.getElementById('co2-value').innerText = `${latestValue} ppm`;
 
         // Prepare data for the chart
-        const labels = data.slice(0, 7).map(entry => formatDate(entry.time)); // Last 7 days
-        const co2Values = data.slice(0, 7).map(entry => entry.co2_wert ?? 0);
+        const labels = data.map(entry => formatDate(entry.time)); // Alle verfügbaren Daten
+        const co2Values = data.map(entry => entry.co2_wert ?? 0);
 
         // Generate CO2 description
         const descriptions = generateDescriptions(null, latestValue, null);
@@ -177,8 +177,8 @@ async function fetchSolar() {
         document.getElementById('solar-value').innerText = `${latestValue} kWh`;
 
         // Prepare data for the chart
-        const labels = data.slice(0, 7).map(entry => formatDate(entry.time)); // Last 7 days
-        const solarValues = data.slice(0, 7).map(entry => entry.stromproduktion ?? 0);
+        const labels = data.map(entry => formatDate(entry.time)); // Alle verfügbaren Daten
+        const solarValues = data.map(entry => entry.stromproduktion ?? 0);
 
         // Generate Solar description
         const descriptions = generateDescriptions(null, null, latestValue);
@@ -223,7 +223,7 @@ async function fetchSolar() {
     }
 }
 
-// Create a combined chart for the last week using the same data from individual charts
+// Create a combined chart for all data
 async function createCombinedChart() {
     try {
         const luftData = await fetchLuftqualität();

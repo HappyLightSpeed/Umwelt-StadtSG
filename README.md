@@ -21,6 +21,7 @@ Die Website verwendet folgende APIs, die Daten von der St. Galler Stadtwerke ber
 ## Herausforderungen
 
 Leider sind die APIs unvollständig, und es fehlen viele Daten, was die Entwicklung erschwert und frustrierend gemacht hat. Ich bin mir unsicher, ob alles korrekt funktioniert, da nicht immer zuverlässige oder vollständige Informationen zur Verfügung stehen.
+Deswegen macht das solche Mühe. Ich hätte lieber für dieses Semester eine Website für Scharade gemacht. Das wäre viel angenehmer und auch nützlicher gewesen.
 
 ## Unterstützung durch ChatGPT
 
