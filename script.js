@@ -19,6 +19,39 @@ async function fetchLuftqualität() {
         const labels = data.map(entry => formatDate(entry.time));
         const pm10Values = data.map(entry => entry.pm10_wert || 0); // Avoid undefined values
 
+        // Create individual PM10 chart
+        const pm10Ctx = document.getElementById('pm10Chart').getContext('2d');
+        new Chart(pm10Ctx, {
+            type: 'line',
+            data: {
+                labels,
+                datasets: [{
+                    label: 'PM10 Feinstaub (µg/m³)',
+                    data: pm10Values,
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    fill: true,
+                }]
+            },
+            options: {
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Datum'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'PM10-Wert (µg/m³)'
+                        },
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
         return { labels, pm10Values };
     } catch (error) {
         console.error('Error fetching Luftqualität data:', error);
@@ -41,6 +74,39 @@ async function fetchCO2() {
         const labels = data.map(entry => formatDate(entry.time));
         const co2Values = data.map(entry => entry.co2_wert || 0);
 
+        // Create individual CO2 chart
+        const co2Ctx = document.getElementById('co2Chart').getContext('2d');
+        new Chart(co2Ctx, {
+            type: 'line',
+            data: {
+                labels,
+                datasets: [{
+                    label: 'CO2-Konzentration (ppm)',
+                    data: co2Values,
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    fill: true,
+                }]
+            },
+            options: {
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Datum'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'CO2-Wert (ppm)'
+                        },
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
         return { labels, co2Values };
     } catch (error) {
         console.error('Error fetching CO2 data:', error);
@@ -62,6 +128,39 @@ async function fetchSolar() {
         // Prepare data for the chart
         const labels = data.map(entry => formatDate(entry.time));
         const solarValues = data.map(entry => entry.stromproduktion || 0);
+
+        // Create individual Solar chart
+        const solarCtx = document.getElementById('solarChart').getContext('2d');
+        new Chart(solarCtx, {
+            type: 'line',
+            data: {
+                labels,
+                datasets: [{
+                    label: 'Solarstromproduktion (kWh)',
+                    data: solarValues,
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    fill: true,
+                }]
+            },
+            options: {
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Datum'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Stromproduktion (kWh)'
+                        },
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
 
         return { labels, solarValues };
     } catch (error) {
